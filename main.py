@@ -1,9 +1,6 @@
-from venv import logger
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-
-# from selenium.webdriver.edge.service import Service
 import telegram
 import asyncio
 import logging
@@ -21,14 +18,7 @@ async def bot_message(input):
     async with bot:
         await bot.send_message(text=input, chat_id=376178155)
 
-
-# My Phone chat ID: 376178155
-# MY Bot Chat ID: 6174623243
-
 chrome_options = Options()
-# chrome_options.add_argument("--disable-extensions")
-# chrome_options.add_argument("--disable-gpu")
-# chrome_options.add_argument("--no-sandbox") # linux only
 chrome_options.add_argument("--headless")
 
 driver = webdriver.Chrome(
@@ -36,15 +26,8 @@ driver = webdriver.Chrome(
 )
 logging.info("Opened Chromium Web-Browser")
 
-# driver = webdriver.Firefox()
-# driver = webdriver.Edge(
-#     service=Service("/home/amsalem//Projects/DealBot/msedgedriver.exe")
-# )
 
 driver.get("https://t.me/s/McKenzie_Deals?q=zephyrus")
-# msgs = driver.find_elements(
-#     By.XPATH, value='//div[@class="tgme_widget_message_text js-message_text"]'
-# )
 msgs = driver.find_elements(By.CSS_SELECTOR, value="div.tgme_widget_message")
 
 try:
