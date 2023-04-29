@@ -12,11 +12,14 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO, filename="main-py.log"
 )
 
+CHATID = 376178155
+query = "zephyrus"
+tChannel = "McKenzie_Deals"
 
 async def bot_message(input):
     bot = telegram.Bot(keys.token)
     async with bot:
-        await bot.send_message(text=input, chat_id=376178155)
+        await bot.send_message(text=input, chat_id=CHATID)
 
 chrome_options = Options()
 chrome_options.add_argument("--headless")
@@ -27,16 +30,16 @@ driver = webdriver.Chrome(
 logging.info("Opened Chromium Web-Browser")
 
 
-driver.get("https://t.me/s/McKenzie_Deals?q=zephyrus")
+driver.get(f"https://t.me/s/{tChannel}?q={query}")
 msgs = driver.find_elements(By.CSS_SELECTOR, value="div.tgme_widget_message")
 
 try:
-    with open("zephyrus-ids.txt", "r", encoding="utf-16") as o:
+    with open(f"{query}-ids.txt", "r", encoding="utf-16") as o:
         msgIds = json.load(o)
 except Exception as e:
     logging.warning("Failed to open zephyrus-ids.txt. creating a new empty file")
     msgIds = []
-    with open("zephyrus-ids.txt", "w+", encoding="utf-16") as f:
+    with open(f"{query}-ids.txt", "w+", encoding="utf-16") as f:
         f.write("")
         f.close()
 
@@ -49,12 +52,12 @@ if newIds == msgIds:
     logging.info("ID Lists are the same, No new messages")
     driver.quit()
 else:
-    with open("zephyrus-ids.txt", "w+", encoding="utf-16") as f:
-        logging.info("Writing new ids to zephyrus-ids.txt")
+    with open(f"{query}-ids.txt", "w+", encoding="utf-16") as f:
+        logging.info(f"Writing new ids to {query}-ids.txt")
         json.dump(newIds, f)
         f.close()
-    with open("zephyrus.txt", "w+", encoding="utf-16") as f:
-        logging.info("Writing new messages to zephyrus.txt")
+    with open(f"{query}.txt", "w+", encoding="utf-16") as f:
+        logging.info(f"Writing new messages to {query}.txt")
         for element in msgs:
             f.write(element.text)
         f.close()
