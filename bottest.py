@@ -2,14 +2,7 @@ import asyncio
 import telegram
 import keys
 
-
-# async def main():
-#     bot = telegram.Bot(keys.token)
-#     async with bot:
-#         print(await bot.get_me())
-#         print(await bot.get_chat(chat_id=6174623243))
-
-
+# First, send a message in your Telegram bot's chat, so this script can extract your user ID to send you messages with the main.py script
 async def main():
     bot = telegram.Bot(keys.token)
     async with bot:
