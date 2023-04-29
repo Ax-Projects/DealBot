@@ -13,8 +13,8 @@ import keys
 async def main():
     bot = telegram.Bot(keys.token)
     async with bot:
-        print((await bot.get_updates())[0])
-
+        update = (await bot.get_updates())[0]
+        print(update.message.chat.id)
 
 if __name__ == "__main__":
     asyncio.run(main())
