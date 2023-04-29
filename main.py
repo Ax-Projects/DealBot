@@ -23,7 +23,8 @@ async def bot_message(input):
 
 chrome_options = Options()
 chrome_options.add_argument("--headless")
-
+## EDIT THIS DRIVER PATH TO THE LOCATION OF YOUR CHROME DRIVER EXE. 
+## If the Chrome driver already included in PATH, just remove the path string written here and leave it as webdriver.Chrome(options=chrome_options)
 driver = webdriver.Chrome(
     "/usr/lib/chromium-browser/chromedriver", options=chrome_options
 )
