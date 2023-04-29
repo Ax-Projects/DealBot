@@ -2,6 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
+keys.py
+main-py.log
+main.py.*
+zephyrus*
+.vscode
 
 # C extensions
 *.so
