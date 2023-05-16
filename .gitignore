@@ -7,6 +7,7 @@ main-py.log
 main.py.*
 zephyrus*
 .vscode
+api.py
 
 # C extensions
 *.so

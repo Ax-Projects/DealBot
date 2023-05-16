@@ -28,10 +28,10 @@ async def bot_message(input):
 
 chrome_options = Options()
 chrome_options.add_argument("--headless")
-driver = webdriver.Remote("http://localhost:4444/wd/hub", options=chrome_options)
-# driver = webdriver.Chrome(
-#    service=Service("/usr/lib/chromium-browser/chromedriver"), options=chrome_options
-# )
+# driver = webdriver.Remote("http://127.0.0.1:4444/wd/hub", options=chrome_options)
+driver = webdriver.Chrome(
+    service=Service("/usr/lib/chromium-browser/chromedriver"), options=chrome_options
+)
 logging.info("Opened Chrome Web-Browser")
 
 
@@ -81,5 +81,5 @@ try:
 except Exception as e:
     print(e)
 
-# driver.quit()
+driver.quit()
 logging.info("Web-Driver Closed")
