@@ -28,3 +28,5 @@ The first run will create some text files in the main project directory:
 After the first run, every time the script is executed, the `*-ids.txt` file will be checked and compared with ids found in the current execution run. Every new message found will be forwarded to your bot chat channel.
 
 After the first run, every time the script is executed, the `*-ids.txt` file will be checked and compared with ids found in the current execution run. Every new message found will be forwarded to your bot chat channel.
+
+Use docker to run a seleniarm/standalone-chromium:latest in port 4444

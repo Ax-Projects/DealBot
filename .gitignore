@@ -5,7 +5,8 @@ __pycache__/
 keys.py
 main-py.log
 main.py.*
-zephyrus*
+data_lists/
+logs/
 .vscode
 api.py
 
