@@ -1,12 +1,6 @@
 from dataclasses import dataclass, field
 
 
-querys = ["zephyrus", "strix"]
-# tChannel = "McKenzie_Deals"
-# tChannel = "HTDeals"
-tChannel = "KSPcoil"
-
-
 @dataclass
 class Search:
     channel_name: str
@@ -18,10 +12,10 @@ class Search:
             for n in range(len(self.query_list)):
                 _qry = self.query_list[n].strip().replace(" ", "+")
                 _urls.append(f"https://t.me/s/{self.channel_name}?q={_qry}")
-                self.url = _urls
+            self.url = _urls
         elif len(self.query_list) == 1:
             _qry = self.query_list[0].strip().replace(" ", "+")
-            self.url = f"https://t.me/s/{self.channel_name}?q={_qry}"
+            self.url = [f"https://t.me/s/{self.channel_name}?q={_qry}"]
 
 
 def validateSearch(search):
@@ -31,16 +25,24 @@ def validateSearch(search):
         return True
 
 
-try:
-    testSearch = Search(channel_name="testChannel")
-except:
-    pass
 kspSearch = Search(channel_name="KSPcoil", query_list=["rog laptop", "Rumba"])
-mckSearch = Search(channel_name="McKenzie_Deals", query_list=["zephyrus"])
+mckSearch = Search(channel_name="McKenzie_Deals", query_list=["zephyrus", "strix"])
+htdSearch = Search("HTDeals", ["מסך חיצוני", "steelseries"])
 
-print(validateSearch(kspSearch))
-print(validateSearch(mckSearch))
-print(validateSearch(testSearch))
-print(kspSearch.url)
-print(mckSearch.url)
+
+querys = [mckSearch.url, htdSearch.url, kspSearch.url]
+tChannel = mckSearch.channel_name
+tChannels = [mckSearch.channel_name, htdSearch.channel_name, kspSearch.channel_name]
+
+for index in range(len(querys)):
+    for item in querys[index]:
+        print(item)
+        print(tChannels[index])
+# print(validateSearch(kspSearch))
+# print(validateSearch(mckSearch))
+# print(validateSearch(htdSearch))
+# print(kspSearch.url)
+# print(mckSearch.url)
+# print(htdSearch.url)
+# print(htdSearch.channel_name)
 # print(testSearch.url)
