@@ -1,3 +1,4 @@
+from time import sleep as sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -9,9 +10,6 @@ import json
 import keys
 import searchQueries
 
-# from dataclasses import dataclass, field
-
-
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
@@ -20,14 +18,10 @@ logging.basicConfig(
 
 # TO-DO: Create a class for deal search with channel name, and list of queries to check
 # TO-DO: add support for script arguments with sys.argv for channel name and search terms
-# TO-DO: Add logic to get only the last 5 deals from the output list got from selenium
+# TO-DO: Add logic to get only the last 4 deals from the output list got from selenium
 # TO-DO: Add function when searching for terms with multiple words to replace spaces with +
 
 CHATID = 376178155
-# querys = ["zephyrus", "strix"]
-# tChannel = "McKenzie_Deals"
-# tChannel = "HTDeals"
-# tChannel = "KSPcoil"
 
 
 def open_deals_file(filename):
@@ -38,9 +32,23 @@ def open_deals_file(filename):
         logging.warning(e)
         logging.warning(f"Failed to open {filename}-ids.txt. creating a new empty file")
         with open(f"./data_lists/{filename}-ids.txt", "w+", encoding="utf-16") as f:
-            f.write("")
+            f.write("[]")
             f.close()
         return []
+
+
+def get_web_msg(url):
+    driver.get(url)
+    msgs = driver.find_elements(By.CSS_SELECTOR, value="div.tgme_widget_message")
+    return msgs
+
+
+def get_chName(channel):
+    return channel.channel_name
+
+
+def get_chUrl(channel):
+    return channel.url
 
 
 async def bot_message(input):
@@ -51,75 +59,85 @@ async def bot_message(input):
 
 # Initialize searches classes
 kspSearch = searchQueries.Search(
-    channel_name="KSPcoil", query_list=["rog laptop", "Rumba"]
+    channel_name="KSPcoil", query_list=["rog", "steelseries"]
 )
 mckSearch = searchQueries.Search(
     channel_name="McKenzie_Deals", query_list=["zephyrus", "strix"]
 )
-htdSearch = searchQueries.Search("HTDeals", ["מסך חיצוני", "steelseries"])
+htdSearch = searchQueries.Search("HTDeals", ["מסך חיצוני", "dyson"])
 
-## Here are the queries and channels lists ##
-querys = [mckSearch.url, htdSearch.url, kspSearch.url]
-tChannels = [mckSearch.channel_name, htdSearch.channel_name, kspSearch.channel_name]
+tch = [kspSearch, mckSearch, htdSearch]
 
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 
 # For local docker selenium container on RPI4:
-# driver = webdriver.Remote("http://localhost:4444/wd/hub", options=chrome_options)
+driver = webdriver.Remote("http://localhost:4444/wd/hub", options=chrome_options)
+# driver = webdriver.Remote("http://localhost:4444/")
 
 # For selenium container on Z2Mini:
-driver = webdriver.Remote("http://localhost:4444/wd/hub", options=chrome_options)
+# driver = webdriver.Remote("http://10.147.20.195:4444/wd/hub", options=chrome_options)
 
 # For local on host selenium driver:
 # driver = webdriver.Chrome(
 #    service=Service("/usr/lib/chromium-browser/chromedriver"), options=chrome_options
 # )
-logging.info("Opened Chrome Web-Browser")
+# logging.info("Opened Chrome Web-Browser")
 
-for chnl in tChannels:
-    open_deals_file(chnl)
+for c in tch:
+    cName = get_chName(c)
+    queries = get_chUrl(c)
+    # for item in queries:
+    #     logging.info(f"Querying url: {item}")
+    #     print("quering: ", item)
+    for i in range(len(queries)):
+        driver.start_client()
+        q = c.query_list[i].strip().replace(" ", "-")
+        fnm = f"{cName}.{q}"
+        print("filename for current query: ", fnm)
+        logging.info(f"Querying url: {queries[i]}")
+        print("quering: ", queries[i])
+        msgs = []
+        msgs = get_web_msg(queries[i])
+        msgIds = open_deals_file(fnm)
+        newIds = []
+        for element in msgs:
+            newIds.append(element.get_attribute("data-post"))
 
-for index in range(len(tChannels)):
-    for item in querys[index]:
-        driver.get(item)
-        msgs = driver.find_elements(By.CSS_SELECTOR, value="div.tgme_widget_message")
+        # print(any(map(lambda x: x in newIds, msgIds)))
+        difference = list(set(newIds) - set(msgIds))
+        if len(difference) == 0:
+            print(f"{fnm}: No new deals")
+            logging.info("ID Lists are the same, No new messages")
+            driver.stop_client()
+        else:
+            newDeals = []
+            with open(f"./data_lists/{fnm}-ids.txt", "w+", encoding="utf-16") as f:
+                logging.info(f"Writing new ids to ./data_lists/{fnm}-ids.txt")
+                json.dump(newIds, f)
+                f.close()
+            #### for debugging messages content
+            # with open(f"./data_lists/{fnm}.txt", "w+", encoding="utf-16") as f:
+            #     logging.info(f"Writing new messages to ./data_lists/{fnm}.txt")
+            #     for element in msgs:
+            #         f.write(element.text)
+            #     f.close()
+            for i in range(len(newIds)):
+                if newIds[i] not in msgIds:
+                    newDeals.append(newIds[i])
+            print(f"Closing webDriver after fethcing new deal of {fnm}")
+            driver.stop_client()
 
-    msgIds = open_deals_file(tChannels[index])
-    newIds = []
-    newDeals = []
-    for element in msgs:
-        newIds.append(element.get_attribute("data-post"))
-
-    if newIds in msgIds:
-        logging.info("ID Lists are the same, No new messages")
-        # driver.quit()
-    else:
-        with open(
-            f"./data_lists/{tChannels[index]}-ids.txt", "w+", encoding="utf-16"
-        ) as f:
-            logging.info(f"Writing new ids to ./data_lists/{tChannels[index]}-ids.txt")
-            json.dump(newIds, f)
-            f.close()
-        with open(f"./data_lists/{tChannels[index]}.txt", "w+", encoding="utf-16") as f:
-            logging.info(f"Writing new messages to ./data_lists/{tChannels[index]}.txt")
-            for element in msgs:
-                f.write(element.text)
-            f.close()
-        for i in range(len(newIds)):
-            if newIds[i] not in msgIds:
-                newDeals.append(newIds[i])
-
-    try:
-        if len(newDeals) > 0:
-            logging.info("New Deals found! Sending Messages in Telegram Bot")
-            # asyncio.run(bot_message("A New Deal was found!\n"))
-            for id in newDeals[-5::]:
-                for element in msgs:
-                    if element.get_attribute("data-post") == id:
-                        print(element.text)
-                        # asyncio.run(bot_message(element.text))
-    except Exception as e:
-        print(e)
+            try:
+                if len(newDeals) > 0:
+                    logging.info("New Deals found! Sending Messages in Telegram Bot")
+                    asyncio.run(bot_message("A New Deal was found!\n"))
+                    for id in sorted(newDeals)[-4::]:
+                        for element in msgs:
+                            if element.get_attribute("data-post") == id:
+                                asyncio.run(bot_message(element.text))
+            except Exception as e:
+                print(e)
 driver.quit()
-logging.info("Web-Driver Closed")
+
+# logging.info("Web-Driver Closed")

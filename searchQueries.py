@@ -23,11 +23,3 @@ def validateSearch(search):
         return False
     else:
         return True
-
-
-# def get_url_by_name(name):
-#     if name ==
-
-### Create search classes here ###
-mckSearch = Search(channel_name="McKenzie_Deals", query_list=["zephyrus", "strix"])
-print(mckSearch.url)

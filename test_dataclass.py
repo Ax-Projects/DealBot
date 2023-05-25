@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from re import T
 
 
 @dataclass
@@ -30,14 +31,35 @@ mckSearch = Search(channel_name="McKenzie_Deals", query_list=["zephyrus", "strix
 htdSearch = Search("HTDeals", ["מסך חיצוני", "steelseries"])
 
 
-querys = [mckSearch.url, htdSearch.url, kspSearch.url]
-tChannel = mckSearch.channel_name
-tChannels = [mckSearch.channel_name, htdSearch.channel_name, kspSearch.channel_name]
+def get_chName(channel):
+    return channel.channel_name
 
-for index in range(len(querys)):
-    for item in querys[index]:
+
+def get_chUrl(channel):
+    return channel.url
+
+
+tch = [kspSearch, mckSearch, htdSearch]
+for c in tch:
+    queries = get_chUrl(c)
+    cName = get_chName(c)
+    for item in queries:
         print(item)
-        print(tChannels[index])
+        # driver.get(item)
+        # msgs = driver.find_elements(
+        #     By.CSS_SELECTOR, value="div.tgme_widget_message"
+        # )
+        for i in range(len(queries)):
+            q = c.query_list[i].strip().replace(" ", "+")
+            fnm = f"{cName}.{q}"
+            print(fnm)
+# querys = [mckSearch.url, htdSearch.url, kspSearch.url]
+# tChannel = mckSearch.channel_name
+
+# for index in range(len(queries)):
+#     for item in queries[index]:
+#         print(item)
+
 # print(validateSearch(kspSearch))
 # print(validateSearch(mckSearch))
 # print(validateSearch(htdSearch))
