@@ -16,10 +16,12 @@ logging.basicConfig(
     filename="./logs/DealBot.log",
 )
 
-# TO-DO: Create a class for deal search with channel name, and list of queries to check
-# TO-DO: add support for script arguments with sys.argv for channel name and search terms
-# TO-DO: Add logic to get only the last 4 deals from the output list got from selenium
-# TO-DO: Add function when searching for terms with multiple words to replace spaces with +
+# TODO: move the search queries and channels to a separate file and import them like Key.py file
+# TO-DO: Create a class for deal search with channel name, and list of queries to check -- DONE
+# TODO: add support for script arguments with sys.argv for channel name and search terms
+# TO-DO: Add logic to get only the last 4 deals from the output list got from selenium  -- DONE
+# TO-DO: Add function when searching for terms with multiple words to replace spaces with +  -- DONE
+# TODO: update the readme file
 
 CHATID = 376178155
 
@@ -59,12 +61,10 @@ async def bot_message(input):
 
 # Initialize searches classes
 kspSearch = searchQueries.Search(
-    channel_name="KSPcoil", query_list=["rog", "steelseries"]
+    channel_name="KSPcoil", query_list=["rog", "אוזניות steelseries"]
 )
-mckSearch = searchQueries.Search(
-    channel_name="McKenzie_Deals", query_list=["zephyrus", "strix"]
-)
-htdSearch = searchQueries.Search("HTDeals", ["מסך חיצוני", "dyson"])
+mckSearch = searchQueries.Search(channel_name="McKenzie_Deals", query_list=["zephyrus"])
+htdSearch = searchQueries.Search("HTDeals", ["מסך חיצוני", "dyson", "ninja"])
 
 tch = [kspSearch, mckSearch, htdSearch]
 
