@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.service import Service
 import telegram
 import asyncio
 import logging
-import json
+import json, os
 import keys
 import searchQueries
 
@@ -24,6 +24,8 @@ logging.basicConfig(
 # TODO: update the readme file
 
 CHATID = 376178155
+DATAFOLD = "./data_lists"
+LOGSFOLD = "./logs"
 
 
 def open_deals_file(filename):
@@ -59,20 +61,33 @@ async def bot_message(input):
         await bot.send_message(text=input, chat_id=CHATID)
 
 
-# Initialize searches classes
-kspSearch = searchQueries.Search(
-    channel_name="KSPcoil", query_list=["rog", "אוזניות steelseries"]
-)
-mckSearch = searchQueries.Search(channel_name="McKenzie_Deals", query_list=["zephyrus"])
-htdSearch = searchQueries.Search("HTDeals", ["מסך חיצוני", "dyson", "ninja"])
+## Creating a list as long as number of searches in SearchesList.json file
+file = f"{os.getcwd()}/SearchesList.json"
+with open(file) as f:
+    searchList = json.load(f)
 
-tch = [kspSearch, mckSearch, htdSearch]
+searches = []
+for i in range(len(searchList)):
+    search = f"s{i}"  ## Each element in the searches list is "s" + number, depend on the number of searches
+    globals()[search] = None
+    searches.append(search)
 
+
+# Initialize searches classes for each variable in the searches list
+for i, k in zip(searches, searchList):
+    x = searchQueries.Search(k, searchList[k])
+    globals()[i] = x
+
+## Creating folders
+os.makedirs(DATAFOLD, exist_ok=True)
+os.makedirs(LOGSFOLD, exist_ok=True)
+
+## Defining Chrome options for headless run in selenium which removes dependency on connection to a monitor
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 
 # For local docker selenium container on RPI4:
-driver = webdriver.Remote("http://localhost:4444/wd/hub", options=chrome_options)
+driver = webdriver.Remote("http://10.0.0.180:4444/wd/hub", options=chrome_options)
 # driver = webdriver.Remote("http://localhost:4444/")
 
 # For selenium container on Z2Mini:
@@ -84,7 +99,7 @@ driver = webdriver.Remote("http://localhost:4444/wd/hub", options=chrome_options
 # )
 # logging.info("Opened Chrome Web-Browser")
 
-for c in tch:
+for c in searches:
     cName = get_chName(c)
     queries = get_chUrl(c)
     # for item in queries:
@@ -92,7 +107,9 @@ for c in tch:
     #     print("quering: ", item)
     for i in range(len(queries)):
         driver.start_client()
-        q = c.query_list[i].strip().replace(" ", "-")
+        q = (
+            c.query_list[i].strip().replace(" ", "-")
+        )  ## removing white spaces from search terms
         fnm = f"{cName}.{q}"
         print("filename for current query: ", fnm)
         logging.info(f"Querying url: {queries[i]}")
