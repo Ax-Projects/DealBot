@@ -3,6 +3,9 @@ pipeline {
     node {
       label 'rpi4'
     }
+    // environment {
+    //     WORKSPACE = ''
+    // }
 
   }
   stages {
@@ -12,11 +15,19 @@ pipeline {
       }
     }
 
+    stage('install requirements') {
+      steps {
+        sh """
+        
+        """
+        pysh(script: 'pip install -r requirements.txt', returnStatus: true, returnStdout: true)
+      }
+    }
+
     stage('run python script') {
       steps {
         pysh(script: 'main.py', returnStatus: true, returnStdout: true)
       }
     }
-
   }
 }
