@@ -5,9 +5,10 @@ RUN mkdir logs
 RUN mkdir data_lists
 
 COPY ./requirements.txt .
+COPY ./SearchesList.json /dealbot/data_lists
 COPY ./keys.py .
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 VOLUME ["/dealbot/data_lists", "/dealbot/logs"]
 COPY ./main.py . 
