@@ -19,6 +19,7 @@ services:
   selenium:
     image: seleniarm/standalone-chromium:latest
     container_name: selenium-dealbot
+    shm_size: 2gb
     ports:
       - "4444:4444"
       - "5900:5900"
