@@ -1,14 +1,21 @@
-from time import sleep as sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 import telegram
 import asyncio
 import logging
-import json
+import json, os
 import keys
 import searchQueries
+
+
+CHATID = 376178155
+DATAFOLD = "./data_lists"
+LOGSFOLD = "./logs"
+
+## Creating folders
+os.makedirs(DATAFOLD, exist_ok=True)
+os.makedirs(LOGSFOLD, exist_ok=True)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -16,14 +23,8 @@ logging.basicConfig(
     filename="./logs/DealBot.log",
 )
 
-# TODO: move the search queries and channels to a separate file and import them like Key.py file
-# TO-DO: Create a class for deal search with channel name, and list of queries to check -- DONE
 # TODO: add support for script arguments with sys.argv for channel name and search terms
-# TO-DO: Add logic to get only the last 4 deals from the output list got from selenium  -- DONE
-# TO-DO: Add function when searching for terms with multiple words to replace spaces with +  -- DONE
 # TODO: update the readme file
-
-CHATID = 376178155
 
 
 def open_deals_file(filename):
@@ -59,40 +60,27 @@ async def bot_message(input):
         await bot.send_message(text=input, chat_id=CHATID)
 
 
-# Initialize searches classes
-kspSearch = searchQueries.Search(
-    channel_name="KSPcoil", query_list=["rog", "אוזניות steelseries"]
-)
-mckSearch = searchQueries.Search(channel_name="McKenzie_Deals", query_list=["zephyrus"])
-htdSearch = searchQueries.Search("HTDeals", ["מסך חיצוני", "dyson", "ninja"])
+## Creating a list as long as number of searches in SearchesList.json file
+file = f"{os.getcwd()}/SearchesList.json"
+with open(file) as f:
+    searchList: dict = json.load(f)
 
-tch = [kspSearch, mckSearch, htdSearch]
-
+## Defining Chrome options for headless run in selenium which removes dependency on connection to a monitor
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 
 # For local docker selenium container on RPI4:
 driver = webdriver.Remote("http://localhost:4444/wd/hub", options=chrome_options)
-# driver = webdriver.Remote("http://localhost:4444/")
 
-# For selenium container on Z2Mini:
-# driver = webdriver.Remote("http://10.147.20.195:4444/wd/hub", options=chrome_options)
-
-# For local on host selenium driver:
-# driver = webdriver.Chrome(
-#    service=Service("/usr/lib/chromium-browser/chromedriver"), options=chrome_options
-# )
-# logging.info("Opened Chrome Web-Browser")
-
-for c in tch:
+for e in searchList.keys():
+    c = searchQueries.Search(e, searchList[e])
     cName = get_chName(c)
     queries = get_chUrl(c)
-    # for item in queries:
-    #     logging.info(f"Querying url: {item}")
-    #     print("quering: ", item)
     for i in range(len(queries)):
         driver.start_client()
-        q = c.query_list[i].strip().replace(" ", "-")
+        q = (
+            c.query_list[i].strip().replace(" ", "-")
+        )  ## removing white spaces from search terms
         fnm = f"{cName}.{q}"
         print("filename for current query: ", fnm)
         logging.info(f"Querying url: {queries[i]}")
@@ -140,4 +128,4 @@ for c in tch:
                 print(e)
 driver.quit()
 
-# logging.info("Web-Driver Closed")
+logging.info("Web-Driver Closed")
