@@ -5,6 +5,7 @@ RUN mkdir logs data_lists
 
 COPY ./requirements.txt .
 COPY ./SearchesList.json /dealbot/data_lists
+COPY ./searchQueries.py .
 COPY ./keys.py .
 
 RUN pip install --no-cache-dir -r requirements.txt

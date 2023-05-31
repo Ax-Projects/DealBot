@@ -89,7 +89,7 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 
 # # For local docker selenium container on RPI4:
-driver = webdriver.Remote("http://10.0.0.180:4444/wd/hub", options=chrome_options)
+driver = webdriver.Remote("http://selenium-dealbot:4444/wd/hub", options=chrome_options)
 # # driver = webdriver.Remote("http://localhost:4444/")
 
 # For selenium container on Z2Mini:

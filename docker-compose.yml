@@ -5,18 +5,16 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      tags:
-        - amsalemlab/dealbot:1.0
     container_name: dealbot
     volumes:
-      - ./data_lists:/dealbot/data-lists
+      - dealbotdata:/dealbot/data-lists
       - ./logs:/dealbot/logs
     networks:
       - dealbot-net
     depends_on:
       - selenium-dealbot
 
-  selenium:
+  selenium-dealbot:
     image: seleniarm/standalone-chromium:latest
     container_name: selenium-dealbot
     shm_size: 2gb
@@ -30,3 +28,7 @@ services:
 
 networks:
   dealbot-net:
+
+
+volumes:
+  dealbotdata:
