@@ -1,0 +1,29 @@
+version: '2.0'
+services:
+  dealbot:
+    image: amsalemlab/dealbot:1.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: dealbot
+    volumes:
+      - ./data_lists:/dealbot/data-lists
+      - ./logs:/dealbot/logs
+    networks:
+      - dealbot-net
+    depends_on:
+      - selenium-dealbot
+
+  selenium:
+    image: seleniarm/standalone-chromium:latest
+    container_name: selenium-dealbot
+    ports:
+      - "4444:4444"
+      - "5900:5900"
+      - "7900:7900"
+    #     - "443:443"  # If https is enabled, cancel the comment.
+    networks:
+      - dealbot-net
+
+networks:
+  dealbot-net:
