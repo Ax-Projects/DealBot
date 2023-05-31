@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+      tags:
+        - amsalemlab/dealbot:1.0
     container_name: dealbot
     volumes:
       - ./data_lists:/dealbot/data-lists
