@@ -1,14 +1,14 @@
-from time import sleep as sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 import telegram
 import asyncio
 import logging
 import json, os
 import keys
 import searchQueries
+
+# from selenium.webdriver.chrome.service import Service
 
 
 CHATID = 376178155
