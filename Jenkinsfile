@@ -11,16 +11,13 @@ pipeline {
   stages {
     stage('git clone') {
       steps {
-        git(url: 'https://github.com/Ax-Projects/DealBot.git', branch: 'query-list')
+        git(url: 'https://github.com/Ax-Projects/DealBot.git', branch: 'dockerfile')
       }
     }
 
     stage('install requirements') {
       steps {
-        sh """
-        
-        """
-        pysh(script: 'pip install -r requirements.txt', returnStatus: true, returnStdout: true)
+        pysh(script: 'pip install --no-cache-dir -r requirements.txt', returnStatus: true, returnStdout: true)
       }
     }
 
