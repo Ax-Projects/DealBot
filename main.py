@@ -10,6 +10,15 @@ import json, os
 import keys
 import searchQueries
 
+
+CHATID = 376178155
+DATAFOLD = "./data_lists"
+LOGSFOLD = "./logs"
+
+## Creating folders
+os.makedirs(DATAFOLD, exist_ok=True)
+os.makedirs(LOGSFOLD, exist_ok=True)
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
@@ -22,10 +31,6 @@ logging.basicConfig(
 # TO-DO: Add logic to get only the last 4 deals from the output list got from selenium  -- DONE
 # TO-DO: Add function when searching for terms with multiple words to replace spaces with +  -- DONE
 # TODO: update the readme file
-
-CHATID = 376178155
-DATAFOLD = "./data_lists"
-LOGSFOLD = "./logs"
 
 
 def open_deals_file(filename):
@@ -64,31 +69,28 @@ async def bot_message(input):
 ## Creating a list as long as number of searches in SearchesList.json file
 file = f"{os.getcwd()}/SearchesList.json"
 with open(file) as f:
-    searchList = json.load(f)
+    searchList: dict = json.load(f)
 
-searches = []
-for i in range(len(searchList)):
-    search = f"s{i}"  ## Each element in the searches list is "s" + number, depend on the number of searches
-    globals()[search] = None
-    searches.append(search)
+# searches = []
+# for i in range(len(searchList)):
+#     search = f"s{i}"  ## Each element in the searches list is "s" + number, depend on the number of searches
+#     globals()[search] = None
+#     searches.append(search)
 
 
-# Initialize searches classes for each variable in the searches list
-for i, k in zip(searches, searchList):
-    x = searchQueries.Search(k, searchList[k])
-    globals()[i] = x
+# # Initialize searches classes for each variable in the searches list
+# for i, k in zip(searches, searchList):
+#     x = searchQueries.Search(k, searchList[k])
+#     globals()[i] = x
 
-## Creating folders
-os.makedirs(DATAFOLD, exist_ok=True)
-os.makedirs(LOGSFOLD, exist_ok=True)
 
 ## Defining Chrome options for headless run in selenium which removes dependency on connection to a monitor
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 
-# For local docker selenium container on RPI4:
+# # For local docker selenium container on RPI4:
 driver = webdriver.Remote("http://10.0.0.180:4444/wd/hub", options=chrome_options)
-# driver = webdriver.Remote("http://localhost:4444/")
+# # driver = webdriver.Remote("http://localhost:4444/")
 
 # For selenium container on Z2Mini:
 # driver = webdriver.Remote("http://10.147.20.195:4444/wd/hub", options=chrome_options)
@@ -99,7 +101,8 @@ driver = webdriver.Remote("http://10.0.0.180:4444/wd/hub", options=chrome_option
 # )
 # logging.info("Opened Chrome Web-Browser")
 
-for c in searches:
+for e in searchList.keys():
+    c = searchQueries.Search(e, searchList[e])
     cName = get_chName(c)
     queries = get_chUrl(c)
     # for item in queries:
@@ -157,4 +160,4 @@ for c in searches:
                 print(e)
 driver.quit()
 
-# logging.info("Web-Driver Closed")
+logging.info("Web-Driver Closed")
