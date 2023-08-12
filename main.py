@@ -61,7 +61,7 @@ async def bot_message(input):
 
 
 ## Creating a list as long as number of searches in SearchesList.json file
-file = f"{os.getcwd()}/SearchesList.json"
+file = "./SearchesList.json"
 with open(file) as f:
     searchList: dict = json.load(f)
 
