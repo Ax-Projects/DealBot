@@ -49,55 +49,45 @@ def get_queries():
             return {"Error from backend: ", e}, 500
 
 
-<<<<<<<<<<<<<  ✨ Codeium AI Suggestion  >>>>>>>>>>>>>>
--@app.route("/v1/queries/<cname>", methods=["PUT"])
--def update_query(cname):
--    if request.method == "PUT":
--        try:
--            request_data = request.json
--            # Checking if search channel already exists in the searches list
--            searches = load_searches(SEARCHESFILE)
--            channels = searches.keys()
--            if cname in channels and cname == request_data.get("channel_name"):
--                # TODO: add logic to insert new search query terms in the search list
--                queries: list = request_data.get("queries")
--                existing_queries: list = searches.get(cname)
--                for q in queries:
--                    if q in existing_queries:
--                        pass
--                    elif q not in existing_queries:
--                        existing_queries.append(q)
--                update_searches(existing_queries, cname)
--                return {
--                    "status": "OK",
--                    "updated search": f"{cname}",
--                    "queries": existing_queries,
--                }, 200
--        except Exception as e:
--            print(f"Error in GET method:\n {e}")
--            return {"Error from backend: ", e}, 500
-+@app.route("/v1/queries/<cname>", methods=["PUT"])
-+def update_query(cname):
-+    if request.method == "PUT":
-+        try:
-+            request_data = request.json
-+            searches = load_searches(SEARCHESFILE)
-+            if cname in searches and cname == request_data.get("channel_name"):
-+                queries = request_data.get("queries")
-+                existing_queries = searches[cname]
-+                for q in queries:
-+                    if q not in existing_queries:
-+                        existing_queries.append(q)
-+                update_searches(existing_queries, cname)
-+                return {
-+                    "status": "OK",
-+                    "updated search": cname,
-+                    "queries": existing_queries,
-+                }, 200
-+        except Exception as e:
-+            print(f"Error in GET method:\n {e}")
-+            return {"Error from backend: ", e}, 500
-<<<<<  bot-ea13c65e-e75a-4604-8c0f-fb424a1d5531  >>>>>
+@app.route("/v1/queries/<cname>", methods=["GET"])
+def get_query(cname):
+    if request.method == "GET":
+        try:
+            searches = load_searches(SEARCHESFILE)
+            if cname in searches:
+                return {"status": "OK", "saved_searches": searches[cname]}, 200
+            else:
+                return {
+                    "status": "error",
+                    "search": cname,
+                    "error": "Channel doesn't exists in saved searches",
+                }, 500
+        except Exception as e:
+            print(f"Error in GET method:\n {e}")
+            return {"Error from backend: ", e}, 500
+
+
+@app.route("/v1/queries/<cname>", methods=["PUT"])
+def update_query(cname):
+    if request.method == "PUT":
+        try:
+            request_data = request.json
+            searches = load_searches(SEARCHESFILE)
+            if cname in searches and cname == request_data.get("channel_name"):
+                queries = request_data.get("queries")
+                existing_queries = searches[cname]
+                for q in queries:
+                    if q not in existing_queries:
+                        existing_queries.append(q)
+                update_searches(existing_queries, cname)
+                return {
+                    "status": "OK",
+                    "updated search": cname,
+                    "queries": existing_queries,
+                }, 200
+        except Exception as e:
+            print(f"Error in GET method:\n {e}")
+            return {"Error from backend: ", e}, 500
 
 
 @app.route("/v1/queries/", methods=["POST"])
