@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DealBotUI</title>
+    <link rel="stylesheet" href="../static/index.css">
+    <link rel="stylesheet" href="../static/global.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+</head>
+
+<body>
+    <div class="mainscreen">
+        <header class="header">
+            <img class="logo" alt="" src="../static/image-1@2x.png" />
+            <nav class="navigation" id="NavigationMenu">
+                <a class="page" href="./index.html" id="MySearchesLink">
+                    <b class="linktext">
+                        <p>My Searches</p>
+                    </b>
+                </a>
+                <a class="page" href="./update.html" id="UpdateSearchesLink">
+                    <b class="linktext">
+                        <p>Update Searches</p>
+                    </b>
+                </a>
+        </header>
+        <main class="mainbody" id="mainbody">
+            <form class="searchesForm" id="getSearchesForm">
+                <div class="container">
+                    <textarea class="query-output" placeholder="queries will be shown here" id="text_output">
+                        {{ queryOutput }}
+                    </textarea>
+                </div>
+                <div class="buttons">
+                    <input class="button" type="button" value="Get Queries" id="GetQueryButton" name="queryOutput">
+                    <script>
+                        const textarea = document.getElementById("text_output")
+                        const getbutton = document.getElementById("GetQueryButton");
+                        getbutton.addEventListener("click", function() {
+                            fetch("/v1/queries/", {method: "GET"})
+                            .then(response => response.json())
+                            .then(data => {
+                                let content = "";
+                                for (const channel in data.saved_searches){
+                                    content += `${channel}: ${data.saved_searches[channel]} \n`;
+                                }
+
+                                textarea.value = content;
+                            });
+                        });
+                    </script>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
+
+</html>

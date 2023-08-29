@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DealBotUI</title>
+    <link rel="stylesheet" href="../static/index.css">
+    <link rel="stylesheet" href="../static/global.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+</head>
+
+<body>
+    <div class="mainscreen">
+        <header class="header">
+            <img class="logo" alt="" src="../static/image-1@2x.png" />
+            <nav class="navigation" id="NavigationMenu">
+                <a class="page" href="./index.html" id="MySearchesLink">
+                    <b class="linktext">
+                        <p>My Searches</p>
+                    </b>
+                </a>
+                <a class="page" href="./update.html" id="UpdateSearchesLink">
+                    <b class="linktext">
+                        <p>Update Searches</p>
+                    </b>
+                </a>
+        </header>
+        <main class="mainbody" id="SearchesBody">
+            <div class="container">
+                <form class="form" id="SelectChannelForm">
+                    <select class="dropdown" id="ChannelName" name="cname" title="ChannelName">
+                        {% for name in cnames %}
+                        <option value="{{name}}">{{name}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <script>
+                        const selectedChannel = document.getElementById("ChannelName");
+                        let cname = selectedChannel.value;
+
+                        selectedChannel.addEventListener("change", function(){
+                            cname = selectedChannel.value;
+                            console.log(cname);
+                        });
+                    </script>
+
+                    <input class="textbox" type="text" placeholder="Channel name to add" id="AddChannelTextbox" name="newChannelName">
+                    <div class="buttons" id="ChannelButtons">
+                        <input class="button" type="button" value="Add" id="AddChannelButton">
+                        <input class="button" type="button" value="Delete" id="DelChannelButton">
+                    </div>
+                </form>
+            </div>
+            <div class="container">
+                <form class="form" id="SelectQueryForm">
+                    <select class="dropdown" id="SearchTerms" title="SearchTerms" name="searchTermsSelected">
+                        {% for searchitem in searchesitems %}
+                        <option value="{{searchitem}}">{{searchitem}}</option>
+                        {% endfor %}
+                    </select>
+                    <input class="textbox" type="text" placeholder="Items to search for" id="AddQueryTextbox">
+                    <div class="buttons" id="QueryButtons">
+                        <input class="button" type="button" value="Add" id="AddQueryButton">
+                        <input class="button" type="button" value="Delete" id="DelQueryButton">
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

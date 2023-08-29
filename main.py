@@ -8,7 +8,7 @@ import asyncio
 import logging
 import json, os
 import keys
-import searchQueries
+import modules.searchQueries as searchQueries
 
 
 CHATID = 376178155
