@@ -9,6 +9,8 @@ data_lists/
 logs/
 .vscode
 api.py
+website
+*-workspace
 
 # C extensions
 *.so

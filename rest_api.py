@@ -4,6 +4,7 @@ import signal
 import json
 
 SEARCHESFILE = f"{os.getcwd()}/SearchesList.json"
+HOMEPAGE = f"{os.getcwd()}/website/"
 
 
 def load_searches(file_path) -> dict:
@@ -32,7 +33,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def root():
-    return "server is online", 200
+    return render_template("index.html", searches=searches, cnames=searches.keys())
 
 
 @app.route("/v1/queries/", methods=["GET"])

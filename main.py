@@ -71,18 +71,6 @@ file = f"{os.getcwd()}/SearchesList.json"
 with open(file) as f:
     searchList: dict = json.load(f)
 
-# searches = []
-# for i in range(len(searchList)):
-#     search = f"s{i}"  ## Each element in the searches list is "s" + number, depend on the number of searches
-#     globals()[search] = None
-#     searches.append(search)
-
-
-# # Initialize searches classes for each variable in the searches list
-# for i, k in zip(searches, searchList):
-#     x = searchQueries.Search(k, searchList[k])
-#     globals()[i] = x
-
 
 ## Defining Chrome options for headless run in selenium which removes dependency on connection to a monitor
 chrome_options = Options()
