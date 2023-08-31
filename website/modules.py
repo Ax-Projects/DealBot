@@ -1,4 +1,5 @@
 import json
+import os
 
 # SEARCHESFILE = "../SearchesList.json"
 
@@ -9,9 +10,12 @@ def load_searches(file_path) -> dict:
             json_data: dict = json.load(file)
         return json_data
     except FileNotFoundError:
+        if not os.path.exists(file_path):
+            with open(file_path, "w", encoding="utf-16") as file:
+                json.dump({}, file)
         return {
             "status": "error",
-            "reason": "search list file is un-accessible",
+            "reason": "search list file is un-accessible.",
         }
 
 
