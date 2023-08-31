@@ -44,8 +44,12 @@ def open_deals_file(filename):
 
 def get_web_msg(url):
     driver.get(url)
-    msgs = driver.find_elements(By.CSS_SELECTOR, value="div.tgme_widget_message")
-    return msgs
+    if driver.current_url != url:
+        return None
+        return {"status": "error", "reason": "Telegram channel doesn't exists"}
+    else:
+        msgs = driver.find_elements(By.CSS_SELECTOR, value="div.tgme_widget_message")
+        return msgs
 
 
 def get_chName(channel):
@@ -64,7 +68,8 @@ async def bot_message(input):
 
 ## Creating a list as long as number of searches in SearchesList.json file
 file = f"{os.getcwd()}/SearchesList.json"
-with open(file) as f:
+print(file)
+with open(file, "r", encoding="utf-16") as f:
     searchList: dict = json.load(f)
 
 
@@ -90,10 +95,15 @@ for e in searchList.keys():
         print("quering: ", queries[i])
         msgs = []
         msgs = get_web_msg(queries[i])
-        msgIds = open_deals_file(fnm)
-        newIds = []
-        for element in msgs:
-            newIds.append(element.get_attribute("data-post"))
+        if msgs is not None:
+            msgIds = open_deals_file(fnm)
+            newIds = []
+            for element in msgs:
+                newIds.append(element.get_attribute("data-post"))
+        else:
+            logging.info(f"bad url: {queries[i]}. Skipping")
+            driver.stop_client()
+            break
 
         # print(any(map(lambda x: x in newIds, msgIds)))
         difference = list(set(newIds) - set(msgIds))
