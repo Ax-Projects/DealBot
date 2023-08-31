@@ -81,6 +81,8 @@ chrome_options.add_argument("--headless")
 driver = webdriver.Remote("http://localhost:4444/wd/hub", options=chrome_options)
 
 for e in searchList.keys():
+    if searchList[e] == []:
+        break
     c = searchQueries.Search(e, searchList[e])
     cName = get_chName(c)
     queries = get_chUrl(c)
