@@ -42,7 +42,7 @@ def get_query(cname):
     if request.method == "GET":
         try:
             searches = load_searches(SEARCHESFILE)
-            if cname in searches:
+            if str(cname).strip() in searches:
                 return {"status": "OK", "saved_searches": searches[cname]}, 200
             else:
                 return {
@@ -65,7 +65,7 @@ def update_query(cname):
                 queries = request_data.get("queries")
                 existing_queries = searches[cname]
                 for q in queries:
-                    if q not in existing_queries:
+                    if str(q).strip() not in existing_queries:
                         existing_queries.append(q)
                 update_searches(
                     query_list=existing_queries,
