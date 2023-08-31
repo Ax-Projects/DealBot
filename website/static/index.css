@@ -89,7 +89,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    font-family: Inter;
+    font-family: Inter, Verdana, Geneva, sans-serif;
 }
 
 .form {

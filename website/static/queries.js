@@ -50,12 +50,11 @@ function AddNewSearchTerm() {
         .then(data => {
             console.log(data);
             fetchAndSetSearches(cname);
+            clearSearchTerm();
         })
         .catch(error => {
             console.log(error);
         })
-
-    // document.getElementById("AddQueryTextbox").value = "";
 };
 function DeleteSearchTerm() {
     let searchtodelete = document.getElementById("SearchTerms").value;
