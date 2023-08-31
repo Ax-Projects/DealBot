@@ -1,6 +1,6 @@
 from flask import redirect, request, render_template, Blueprint
 import os, signal, json
-from .modules import update_searches, load_searches
+from .modules import add_channel, delete_channel, update_searches, load_searches
 
 SEARCHESFILE = f"{os.getcwd()}/SearchesList.json"
 
@@ -15,13 +15,14 @@ def home():
 
 @views.route("/index.html", methods=["GET"])
 def index():
-    act = request.form
-    print(act)
     return render_template("index.html", searches=searches, cnames=searches.keys())
 
 
 @views.route("/update.html", methods=["GET", "POST", "PUT", "DELETE"])
 def updatepage():
+    # channelname = request.form.get("cname")
+    # newChannelName = request.form.get("newChannelName")
+    # print(newChannelName)
     return render_template("update.html", searches=searches, cnames=searches.keys())
 
 
@@ -76,7 +77,7 @@ def update_query(cname):
                     "queries": existing_queries,
                 }, 200
         except Exception as e:
-            print(f"Error in GET method:\n {e}")
+            print(f"Error in PUT method:\n {e}")
             return {"Error from backend: ", e}, 500
 
 
@@ -89,15 +90,24 @@ def new_query():
             channels = searches.keys()
             cname = request_data.get("channel_name")
             if cname not in channels:
-                queries: list = request_data.get("queries")
-                update_searches(queries, cname)
-                return {
-                    "status": "OK",
-                    "new search": f"{cname}",
-                    "queries": queries,
-                }, 200
+                try:
+                    queries: list = request_data.get("queries")
+                    update_searches(queries, cname)
+                    return {
+                        "status": "OK",
+                        "new search": f"{cname}",
+                        "queries": queries,
+                    }, 200
+                except:
+                    if request_data.get("queries") is None:
+                        add_channel(channel_name=cname, searchfile=SEARCHESFILE)
+                        print(f"{cname} added")
+                        return {
+                            "status": "OK",
+                            "added channel": f"{cname}",
+                        }, 200
         except Exception as e:
-            print(f"Error in GET method:\n {e}")
+            print(f"Error in POST method:\n {e}")
             return {"Error from backend: ", e}, 500
 
 
@@ -109,21 +119,35 @@ def delete_query(cname):
             searches = load_searches(SEARCHESFILE)
             channels = searches.keys()
             if cname in channels and cname == request_data.get("channel_name"):
-                queries = request_data.get("queries")
-                existing_queries: list = searches.get(cname)
-                for q in queries:
-                    if q in existing_queries:
-                        existing_queries.remove(q)
-                    elif q not in existing_queries:
-                        pass
-                update_searches(existing_queries, cname)
-                return {
-                    "status": "OK",
-                    "deleted search": f"{cname}",
-                    "queries": queries,
-                }, 200
+                try:
+                    queries = request_data.get("queries")
+                    existing_queries: list = searches.get(cname)
+                    for q in queries:
+                        if q in existing_queries:
+                            existing_queries.remove(q)
+                        elif q not in existing_queries:
+                            pass
+                    update_searches(
+                        query_list=existing_queries,
+                        channel_name=cname,
+                        searchfile=SEARCHESFILE,
+                    )
+                    return {
+                        "status": "OK",
+                        "deleted search": f"{cname}",
+                        "queries": queries,
+                    }, 200
+                except:
+                    if request_data.get("queries") is None:
+                        delete_channel(channel_name=cname, searchfile=SEARCHESFILE)
+                        print(f"{cname} deleted")
+                    return {
+                        "status": "OK",
+                        "deleted channel": f"{cname}",
+                    }, 200
+
         except Exception as e:
-            print(f"Error in GET method:\n {e}")
+            print(f"Error in DELETE method:\n {e}")
             return {"Error from backend: ", e}, 500
 
 

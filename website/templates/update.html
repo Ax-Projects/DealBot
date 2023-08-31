@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../static/index.css">
     <link rel="stylesheet" href="../static/global.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+    <script src="../static/channels.js"></script>
+    <script src="../static/queries.js"></script>
 </head>
 
 <body>
@@ -30,25 +32,14 @@
             <div class="container">
                 <form class="form" id="SelectChannelForm">
                     <select class="dropdown" id="ChannelName" name="cname" title="ChannelName">
-                        {% for name in cnames %}
+                        <!--{% for name in cnames %}
                         <option value="{{name}}">{{name}}</option>
-                        {% endfor %}
+                        {% endfor %}-->
                     </select>
-
-                    <script>
-                        const selectedChannel = document.getElementById("ChannelName");
-                        let cname = selectedChannel.value;
-
-                        selectedChannel.addEventListener("change", function(){
-                            cname = selectedChannel.value;
-                            console.log(cname);
-                        });
-                    </script>
-
                     <input class="textbox" type="text" placeholder="Channel name to add" id="AddChannelTextbox" name="newChannelName">
                     <div class="buttons" id="ChannelButtons">
-                        <input class="button" type="button" value="Add" id="AddChannelButton">
-                        <input class="button" type="button" value="Delete" id="DelChannelButton">
+                        <input class="button" type="button" value="Add" id="AddChannelButton" formmethod="POST" formaction="/v1/queries/" onclick="AddNewChannel()">
+                        <input class="button" type="button" value="Delete" id="DelChannelButton" formmethod="DELETE" formaction="/v1/queries/{{cname}}" onclick="deleteWholeChannel()">
                     </div>
                 </form>
             </div>
@@ -59,9 +50,9 @@
                         <option value="{{searchitem}}">{{searchitem}}</option>
                         {% endfor %}
                     </select>
-                    <input class="textbox" type="text" placeholder="Items to search for" id="AddQueryTextbox">
+                    <input class="textbox" type="text" placeholder="Items to search for" id="AddQueryTextbox" name="newSeachTerms">
                     <div class="buttons" id="QueryButtons">
-                        <input class="button" type="button" value="Add" id="AddQueryButton">
+                        <input class="button" type="button" value="Add" id="AddQueryButton" onclick="AddNewSearchTerm()">
                         <input class="button" type="button" value="Delete" id="DelQueryButton">
                     </div>
                 </form>

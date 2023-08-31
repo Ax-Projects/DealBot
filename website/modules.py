@@ -15,8 +15,24 @@ def load_searches(file_path) -> dict:
         }
 
 
-def update_searches(query_list, channel_name: str) -> None:
-    searches = load_searches(SEARCHESFILE)
+def add_channel(channel_name: str, searchfile: str) -> None:
+    searches: dict = load_searches(searchfile)
+    searches[channel_name] = []
+    with open(searchfile, "w", encoding="utf-16") as file:
+        json.dump(searches, file)
+
+
+def update_searches(query_list, channel_name: str, searchfile: str) -> None:
+    searches = load_searches(searchfile)
     searches[channel_name] = query_list
-    with open(SEARCHESFILE, "w", encoding="utf-16") as file:
+    with open(searchfile, "w", encoding="utf-16") as file:
+        json.dump(searches, file)
+
+
+def delete_channel(channel_name: str, searchfile: str) -> None:
+    searches = load_searches(searchfile)
+    print(searches)
+    searches.pop(channel_name)
+    print(searches)
+    with open(searchfile, "w", encoding="utf-16") as file:
         json.dump(searches, file)
