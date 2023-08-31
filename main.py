@@ -25,11 +25,7 @@ logging.basicConfig(
     filename="./logs/DealBot.log",
 )
 
-# TODO: move the search queries and channels to a separate file and import them like Key.py file
-# TO-DO: Create a class for deal search with channel name, and list of queries to check -- DONE
 # TODO: add support for script arguments with sys.argv for channel name and search terms
-# TO-DO: Add logic to get only the last 4 deals from the output list got from selenium  -- DONE
-# TO-DO: Add function when searching for terms with multiple words to replace spaces with +  -- DONE
 # TODO: update the readme file
 
 
@@ -77,25 +73,12 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 
 # # For local docker selenium container on RPI4:
-driver = webdriver.Remote("http://10.0.0.180:4444/wd/hub", options=chrome_options)
-# # driver = webdriver.Remote("http://localhost:4444/")
-
-# For selenium container on Z2Mini:
-# driver = webdriver.Remote("http://10.147.20.195:4444/wd/hub", options=chrome_options)
-
-# For local on host selenium driver:
-# driver = webdriver.Chrome(
-#    service=Service("/usr/lib/chromium-browser/chromedriver"), options=chrome_options
-# )
-# logging.info("Opened Chrome Web-Browser")
+driver = webdriver.Remote("http://localhost:4444/wd/hub", options=chrome_options)
 
 for e in searchList.keys():
     c = searchQueries.Search(e, searchList[e])
     cName = get_chName(c)
     queries = get_chUrl(c)
-    # for item in queries:
-    #     logging.info(f"Querying url: {item}")
-    #     print("quering: ", item)
     for i in range(len(queries)):
         driver.start_client()
         q = (
