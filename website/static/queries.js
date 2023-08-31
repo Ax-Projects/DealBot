@@ -1,3 +1,7 @@
+function clearSearchTerm() {
+    document.getElementById("AddQueryTextbox").value = "";
+}
+
 function setRequestOptions(data, method) {
     return requestOptions = {
         method: method,
@@ -37,7 +41,7 @@ function AddNewSearchTerm() {
     // console.log(newSearch);
     const requestOptions = setRequestOptions({
         "channel_name": cname, "queries": [
-            stringify(newSearch)
+            newSearch
         ]
     }, "PUT");
 
@@ -45,13 +49,34 @@ function AddNewSearchTerm() {
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            fetchAndSetSearches();
+            fetchAndSetSearches(cname);
         })
         .catch(error => {
             console.log(error);
         })
 
-    document.getElementById("AddQueryTextbox").value = "";
+    // document.getElementById("AddQueryTextbox").value = "";
+};
+function DeleteSearchTerm() {
+    let searchtodelete = document.getElementById("SearchTerms").value;
+    const cname = document.getElementById("ChannelName").value;
+    const deleteButton = document.getElementById("DelQueryButton");
+    // console.log(newSearch);
+    const requestOptions = setRequestOptions({
+        "channel_name": cname, "queries": [
+            searchtodelete
+        ]
+    }, "DELETE");
+
+    fetch("/v1/queries/" + cname, requestOptions)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            fetchAndSetSearches(cname);
+        })
+        .catch(error => {
+            console.log(error);
+        })
 };
 
 

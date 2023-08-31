@@ -70,7 +70,11 @@ def update_query(cname):
                 for q in queries:
                     if q not in existing_queries:
                         existing_queries.append(q)
-                update_searches(existing_queries, cname)
+                update_searches(
+                    query_list=existing_queries,
+                    channel_name=cname,
+                    searchfile=SEARCHESFILE,
+                )
                 return {
                     "status": "OK",
                     "updated search": cname,
@@ -141,10 +145,16 @@ def delete_query(cname):
                     if request_data.get("queries") is None:
                         delete_channel(channel_name=cname, searchfile=SEARCHESFILE)
                         print(f"{cname} deleted")
-                    return {
-                        "status": "OK",
-                        "deleted channel": f"{cname}",
-                    }, 200
+                        return {
+                            "status": "OK",
+                            "deleted channel": f"{cname}",
+                        }, 200
+                    elif cname != request_data.get("channel_name"):
+                        return {
+                            "status": "error",
+                            "search": cname,
+                            "error": "Channel doesn't exists in saved searches",
+                        }, 500
 
         except Exception as e:
             print(f"Error in DELETE method:\n {e}")

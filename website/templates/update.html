@@ -50,10 +50,13 @@
                         <option value="{{searchitem}}">{{searchitem}}</option>
                         {% endfor %}
                     </select>
-                    <input class="textbox" type="text" placeholder="Items to search for" id="AddQueryTextbox" name="newSeachTerms">
+                    <div class="buttons" id="SearchTextArea">
+                        <input class="textbox" type="text" placeholder="Items to search for" id="AddQueryTextbox" name="newSeachTerms">
+                        <button id="clearButton" onclick="clearSearchTerm()">&#x2716;</button>
+                    </div>
                     <div class="buttons" id="QueryButtons">
                         <input class="button" type="button" value="Add" id="AddQueryButton" onclick="AddNewSearchTerm()">
-                        <input class="button" type="button" value="Delete" id="DelQueryButton">
+                        <input class="button" type="button" value="Delete" id="DelQueryButton" onclick="DeleteSearchTerm()">
                     </div>
                 </form>
             </div>
