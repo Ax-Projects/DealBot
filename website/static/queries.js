@@ -37,8 +37,6 @@ function fetchAndSetSearches(cname) {
 function AddNewSearchTerm() {
     let newSearch = document.getElementById("AddQueryTextbox").value;
     const cname = document.getElementById("ChannelName").value;
-    const addButton = document.getElementById("AddQueryButton");
-    // console.log(newSearch);
     const requestOptions = setRequestOptions({
         "channel_name": cname, "queries": [
             newSearch
@@ -59,8 +57,6 @@ function AddNewSearchTerm() {
 function DeleteSearchTerm() {
     let searchtodelete = document.getElementById("SearchTerms").value;
     const cname = document.getElementById("ChannelName").value;
-    const deleteButton = document.getElementById("DelQueryButton");
-    // console.log(newSearch);
     const requestOptions = setRequestOptions({
         "channel_name": cname, "queries": [
             searchtodelete
@@ -83,11 +79,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("SelectQueryForm").addEventListener("submit", function (event) {
         event.preventDefault();
     });
-    document.getElementById("SearchTerms").addEventListener("change", function (event) {
-        let cname = event.target.value;
+    document.getElementById("SearchTerms").addEventListener("change", function () {
     });
-    document.getElementById("AddQueryButton").addEventListener("click", function (event) {
-        let newCname = event.target.value;
-        // console.log(newCname);
+    document.getElementById("AddQueryButton").addEventListener("click", function () {
     });
 });

@@ -15,15 +15,12 @@ def home():
 
 @views.route("/index.html", methods=["GET"])
 def index():
-    return render_template("index.html", searches=searches, cnames=searches.keys())
+    return render_template("index.html")
 
 
 @views.route("/update.html", methods=["GET", "POST", "PUT", "DELETE"])
 def updatepage():
-    # channelname = request.form.get("cname")
-    # newChannelName = request.form.get("newChannelName")
-    # print(newChannelName)
-    return render_template("update.html", searches=searches, cnames=searches.keys())
+    return render_template("update.html")
 
 
 @views.route("/v1/queries/", methods=["GET"])
@@ -34,7 +31,7 @@ def get_queries():
             if searches.fromkeys("status") != "error":
                 return {"status": "OK", "saved_searches": searches}, 200
             elif searches.fromkeys("status") == "error":
-                return searches, 500
+                return searches, 400
         except Exception as e:
             print(f"Error in GET method:\n {e}")
             return {"Error from backend: ", e}, 500
@@ -52,7 +49,7 @@ def get_query(cname):
                     "status": "error",
                     "search": cname,
                     "error": "Channel doesn't exists in saved searches",
-                }, 500
+                }, 400
         except Exception as e:
             print(f"Error in GET method:\n {e}")
             return {"Error from backend: ", e}, 500
@@ -154,7 +151,7 @@ def delete_query(cname):
                             "status": "error",
                             "search": cname,
                             "error": "Channel doesn't exists in saved searches",
-                        }, 500
+                        }, 400
 
         except Exception as e:
             print(f"Error in DELETE method:\n {e}")

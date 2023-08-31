@@ -32,9 +32,6 @@
             <div class="container">
                 <form class="form" id="SelectChannelForm">
                     <select class="dropdown" id="ChannelName" name="cname" title="ChannelName">
-                        <!--{% for name in cnames %}
-                        <option value="{{name}}">{{name}}</option>
-                        {% endfor %}-->
                     </select>
                     <input class="textbox" type="text" placeholder="Channel name to add" id="AddChannelTextbox" name="newChannelName">
                     <div class="buttons" id="ChannelButtons">
@@ -46,9 +43,6 @@
             <div class="container">
                 <form class="form" id="SelectQueryForm">
                     <select class="dropdown" id="SearchTerms" title="SearchTerms" name="searchTermsSelected">
-                        {% for searchitem in searchesitems %}
-                        <option value="{{searchitem}}">{{searchitem}}</option>
-                        {% endfor %}
                     </select>
                     <div class="buttons" id="SearchTextArea">
                         <input class="textbox" type="text" placeholder="Items to search for" id="AddQueryTextbox" name="newSeachTerms">

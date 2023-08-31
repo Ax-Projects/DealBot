@@ -47,7 +47,6 @@ function deleteWholeChannel() {
 };
 function AddNewChannel() {
     let newCname = document.getElementById("AddChannelTextbox").value;
-    const addButton = document.getElementById("AddChannelButton");
     console.log(newCname);
     const requestOptions = setRequestOptions({ "channel_name": newCname }, "POST");
 
@@ -71,8 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let cname = event.target.value;
         fetchAndSetSearches(cname)
     });
-    document.getElementById("AddChannelTextbox").addEventListener("change", function (event) {
-        let newCname = event.target.value;
-        // console.log(newCname);
+    document.getElementById("AddChannelTextbox").addEventListener("change", function () {
     });
 });
