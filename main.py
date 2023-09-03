@@ -98,11 +98,13 @@ for e in searchList.keys():
         msgs = []
         msgs = get_web_msg(queries[i])
         if msgs is not None or msgs != []:
+            print(msgs)
             msgIds = open_deals_file(fnm)
             newIds = []
             for element in msgs:
                 newIds.append(element.get_attribute("data-post"))
         else:
+            print(msgs)
             logging.info(f"bad url: {queries[i]}. Skipping")
             driver.stop_client()
             break
