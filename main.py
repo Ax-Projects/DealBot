@@ -44,12 +44,12 @@ def open_deals_file(filename):
 
 def get_web_msg(url):
     driver.get(url)
-    if driver.current_url != url:
-        return None
-        return {"status": "error", "reason": "Telegram channel doesn't exists"}
-    else:
+    try:
         msgs = driver.find_elements(By.CSS_SELECTOR, value="div.tgme_widget_message")
         return msgs
+    except:
+        print("Failed to get messages from telegram url by element selector")
+        return None
 
 
 def get_chName(channel):
@@ -97,7 +97,7 @@ for e in searchList.keys():
         print("quering: ", queries[i])
         msgs = []
         msgs = get_web_msg(queries[i])
-        if msgs is not None:
+        if msgs is not None or msgs != []:
             msgIds = open_deals_file(fnm)
             newIds = []
             for element in msgs:
