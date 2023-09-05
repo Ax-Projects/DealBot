@@ -105,7 +105,7 @@ for e in searchList.keys():
         else:
             logging.info(f"bad url: {queries[i]}. Skipping")
             driver.stop_client()
-            break
+            continue
 
         # print(any(map(lambda x: x in newIds, msgIds)))
         difference = list(set(newIds) - set(msgIds))
